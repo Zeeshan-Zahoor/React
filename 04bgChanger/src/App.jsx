@@ -17,19 +17,19 @@ function App() {
                   <button className='rounded-lg'
                   onClick={() => {setColor('green')}}
                     style={{backgroundColor : 'green', padding: '5px 15px', cursor: 'pointer'}}
-                  >Red</button>
+                  >Green</button>
                   <button className='rounded-lg'
                   onClick={() => {setColor('blue')}}
                     style={{backgroundColor : 'blue', padding: '5px 15px', cursor: 'pointer'}}
-                  >Red</button>
+                  >Blue</button>
                   <button className='rounded-lg'
                   onClick={() => {setColor('olive')}}
                     style={{backgroundColor : 'olive', padding: '5px 15px', cursor: 'pointer'}}
-                  >Red</button>
+                  >Olive</button>
                   <button className='rounded-lg'
                   onClick={() => {setColor('cyan')}}
                     style={{backgroundColor : 'cyan', padding: '5px 15px', cursor: 'pointer'}}
-                  >Red</button>
+                  >Cyan</button>
               </div>
           </div>
       </div>
