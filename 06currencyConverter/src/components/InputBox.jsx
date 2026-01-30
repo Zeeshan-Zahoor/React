@@ -9,7 +9,7 @@ function InputBox({
     currencyOptions = []
 }) {
     return (
-        <div className="bg-white rounded-xl p-4 flex justify-between items-center">
+        <div className="bg-white rounded-xl p-4 flex justify-between items-center mb-2">
           <div className="flex flex-col gap-1">
             <label className="text-sm text-gray-500">{label}</label>
             <input
@@ -30,7 +30,7 @@ function InputBox({
               {currencyOptions.map((currency) => (
                 <option
                     key={currency}
-                    value={currency}> {currency}</option>
+                    value={currency}> {currency.toUpperCase()}</option>
               ))}
 
             </select>

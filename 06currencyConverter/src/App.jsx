@@ -1,11 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import useCurrencyInfo from './hooks/useCurrencyInfo'; 
 import InputBox from './components/InputBox'
+
 import './App.css'
 
 function App() {
 
-  const [toCurrency, setToCurrency] = useState("USD");
+  const [amount, setAmount] = useState(0);
+  const [convertedAmount, setConvertedAmount] = useState(0);
+  const [fromCurrency, setFromCurrency] = useState("usd");
+  const [toCurrency, setToCurrency] = useState("inr");
 
+  const currencyInfo = useCurrencyInfo(fromCurrency);
+  const options = Object.keys(currencyInfo);
+
+  const convert = () => {
+    if(!currencyInfo[toCurrency]) return;
+    setConvertedAmount(amount * currencyInfo[toCurrency])
+  }
+
+  useEffect(() => {
+    convert();
+  }, [amount, fromCurrency, toCurrency, currencyInfo])
+
+  const swap = () => {
+    setFromCurrency(toCurrency)
+    setToCurrency(fromCurrency)
+  }
+
+  console.log(options)
   return (
     <div className="min-h-screen flex items-center justify-center ">
       
@@ -13,44 +36,35 @@ function App() {
 
         {/* FROM */}
         <InputBox 
-            label={"to "}
-            amount={200}
-            selectCurrency= {toCurrency}
-            onCurrencyChange={setToCurrency}
-            currencyOptions={["INR", "USD", "PKR"]}
+            label={"From"}
+            amount={amount}
+            selectCurrency= {fromCurrency}
+            onCurrencyChange={(fromCurrency) => setFromCurrency(fromCurrency)}
+            onAmountChange={(amount) => setAmount(amount)}
+            currencyOptions={options}
         />
 
         {/* SWAP BUTTON */}
-        <div className="flex justify-center -my-4 z-10 relative top-1">
-          <button className="bg-blue-600 text-white px-5 py-1 rounded-md shadow-md hover:bg-blue-700">
+        <div className="flex justify-center -my-4 z-10 relative">
+          <button className="bg-blue-600 text-white px-5 py-1 rounded-md shadow-md hover:bg-blue-700"
+          onClick={swap}>
             swap
           </button>
         </div>
 
         {/* TO */}
-        <div className="bg-white rounded-xl p-4 flex justify-between items-center mt-3">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-500">To</label>
-            <input
-              type="number"
-              placeholder="0"
-              className="text-xl font-semibold outline-none w-32"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1 text-right">
-            <label className="text-sm text-gray-500">Currency Type</label>
-            <select className="border rounded-md px-3 py-1">
-              <option>inr</option>
-              <option>usd</option>
-              <option>eur</option>
-            </select>
-          </div>
-        </div>
+        <InputBox 
+            label={"To"}
+            amount={convertedAmount}
+            selectCurrency= {toCurrency}
+            onCurrencyChange={(toCurrency) => setToCurrency(toCurrency)}
+            currencyOptions={options}
+        />
 
         {/* CONVERT BUTTON */}
-        <button className="mt-5 w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition">
-          Convert USD to INR
+        <button className="mt-5 w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition"
+        onClick={convert}>
+          Convert {fromCurrency.toUpperCase()} to {toCurrency.toUpperCase()}
         </button>
       </div>
     </div>
