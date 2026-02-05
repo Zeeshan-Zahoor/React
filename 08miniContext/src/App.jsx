@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import UserContextProvider from './context/UserContextProvider.jsx';
+import Login from './components/Login.jsx';
+import Profile from './components/Profile.jsx';
+import UserContext from './context/UserContext.js';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
+    <UserContextProvider>
       <h1>Context API with Chai aur code</h1>
-    </>
+      <Login />
+      <Profile />
+    </UserContextProvider>
   )
 }
 
-export default App
+export default App;
