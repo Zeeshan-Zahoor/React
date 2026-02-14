@@ -20,7 +20,7 @@ function Signup() {
             const userData = await authService.createAccount(data)
             if (userData) {
                 const userData = await authService.getCurrentUser()
-                if (userData) dispatch(login(useData));
+                if (userData) dispatch(login(userData));
                 navigate("/")
             }
         } catch (error) {
@@ -42,7 +42,7 @@ function Signup() {
                     Already have an account?&nbsp;
                     <Link
                         to="/login"
-                        className='font-meduim text-primary transition-all duration-200 hover:underline'
+                        className='font-medium text-primary transition-all duration-200 hover:underline'
                     >
                         Sign In
                     </Link>
@@ -55,7 +55,7 @@ function Signup() {
                     <div className='space-y-5'>
                         <Input
                             label="Full Name"
-                            placeholer="Enter your full name"
+                            placeholder="Enter your full name"
                             {...register("name", {
                                 required: true,
                             })}
