@@ -7,15 +7,15 @@ export class AuthService {
 
     constructor() {
         this.client
-            .setEndpoint(conf.aapwriteURL)
-            .setProject(conf.aapwriteProjectId);
+            .setEndpoint(conf.appwriteURL)
+            .setProject(conf.appwriteProjectId);
         this.account = new Account(this.client);
     }
 
     async createAccount({email, password, name}) {
         try {
             const id = ID.unique();
-            const userAccount = await this.account.create({id, email, password, name});
+            const userAccount = await this.account.create(id, email, password, name);
             if(userAccount) {
                 // call another method
                 return this.login({email, password});
@@ -30,7 +30,7 @@ export class AuthService {
 
     async login ({email, password}) {
         try {
-            return await this.account.createEmailPasswordSession({email, password});
+            return await this.account.createEmailPasswordSession(email, password);
         } catch (error) {
             throw error;
         }

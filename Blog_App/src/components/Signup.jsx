@@ -12,15 +12,21 @@ function Signup() {
     const navigate = useNavigate()
     const [error, setError] = useState("")
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm()
+    // const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+
+    console.log(errors);
 
     const create = async (data) => {
+
+        console.log("Form Submitted", data);
         setError("")
         try {
             const userData = await authService.createAccount(data)
             if (userData) {
                 const userData = await authService.getCurrentUser()
                 if (userData) dispatch(login(userData));
+                console.log("Navigating...");
                 navigate("/")
             }
         } catch (error) {
@@ -68,12 +74,14 @@ function Signup() {
                             {...register("email", {
                                 required: true,
                                 validate: {
-                                    matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2, 3})+$/.test(value) || "Email address must be a valid address",
+                                    matchPattern: (value) =>
+                                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)
+                                        || "Email address must be a valid address",
                                 }
                             })}
                         />
 
-                        <Input 
+                        <Input
                             label="Password"
                             type="password"
                             placeholder="Enter your password"
@@ -82,7 +90,7 @@ function Signup() {
                             })}
                         />
 
-                        <Button 
+                        <Button
                             type="submit"
                             className="w-full"
                         >Create Account</Button>

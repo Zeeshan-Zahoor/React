@@ -4,54 +4,70 @@ import {Button, Input, Select} from "../index"
 import service from "../../appwrite/config"
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import RTE from "../RTE"
+
+
+
 
 function PostForm({post}) {
   const {register, handleSubmit, watch, setValue, control, getValues} = useForm({
     defaultValues: {
       title: post?.title || "", 
-      slug: post?.slug || "", 
+      slug: post?.$id || "", 
       content: post?.content || "", 
       status: post?.status || 'active',
     }
   })
-
+  
+  console.log("Post ID:", post?.$id);
   const navigate = useNavigate()
   const userData = useSelector(state => state.auth.userData)
 
-  const submit = async (data) => {
-    if(post) {
-      const file = data.image[0] ? service.uploadFile(data.image[0]) : null
+ const submit = async (data) => {
+  console.log("Submitting with ID:", post.$id);
+  console.log("Slug in data:", data.slug);
 
-      if(file) {
-        service.deleteFile(post.featuredImage)
+  try {
+    let file = null;
+
+    // Upload new image if exists
+    if (data.image && data.image[0]) {
+      file = await service.uploadFile(data.image[0]);
+    }
+
+    if (post) {
+      // UPDATE POST
+      if (file) {
+        await service.deleteFile(post.featureImage);
       }
 
       const dbPost = await service.updatePost(post.$id, {
-        ...data, 
-        featuredImage: file ? file.$id : undefined, 
-      })
+        ...data,
+        featureImage: file ? file.$id : post.featureImage,
+      });
 
-      if(dbPost) {
-          navigate(`/post/${dbPost.$id}`)
-      } else {
-        const file = await service.uploadFile(data.image[0]);
+      if (dbPost) {
+        navigate(`/post/${dbPost.$id}`);
+      }
 
-        if(file) {
-          const fileId = file.$id
-          data.featuredImage = fileId
-          const dbPost = await service.createPost({
-            ...data, 
-            userId: userData.$id,
-          })
+    } else {
+      // CREATE NEW POST
+      const dbPost = await service.createPost({
+        ...data,
+        featureImage: file ? file.$id : null,
+        userId: userData.$id,
+      });
 
-          if(dbPost) {
-            navigate(`/post/${dbPost.$id}`)
-          }
-        }
+      if (dbPost) {
+        navigate(`/post/${dbPost.$id}`);
       }
     }
-    
+
+  } catch (error) {
+    console.log("Post submission error:", error);
   }
+};
+
 
   const slugTransform = useCallback((value) => {
     if(value && typeof value === 'string') {
@@ -127,7 +143,7 @@ function PostForm({post}) {
           <div className="w-full mb-4">
             <img
               src={service.getFilePreview(
-                post.featuredImage
+                post.featureImage
               )}
               alt={post.title}
               className="rounded-lg"

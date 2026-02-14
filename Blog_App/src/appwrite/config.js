@@ -1,4 +1,4 @@
-import conf from "../conf.js";
+import conf from "../conf/conf";
 import { Client, ID, Databases, Storage, Query } from "appwrite";
 
 export class Service {
@@ -8,8 +8,8 @@ export class Service {
 
     constructor() {
         this.client
-            .setEndpoint(conf.aapwriteURL)
-            .setProject(conf.aapwriteProjectId);
+            .setEndpoint(conf.appwriteURL)
+            .setProject(conf.appwriteProjectId);
 
         this.databases = new Databases(this.client)
         this.bucket = new Storage(this.client);
@@ -35,20 +35,20 @@ export class Service {
         }
     }
 
-    async updatePost(slug, { title, content, featuredImage, status }) {
+    async updatePost(slug, { title, content, featureImage, status }) {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
-                slug, 
+                slug,
                 {
                     title,
                     content,
-                    featuredImage,
+                    featureImage,
                     status,
                 }
             )
-        } catch(error) {
+        } catch (error) {
             console.log("Appwrite service :: updatePost :: error", error);
             throw error;
         }
@@ -86,8 +86,9 @@ export class Service {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
-                queries,
-            )
+                queries
+            );
+
         } catch (error) {
             console.log("Appwrite service :: getPosts :: error", error);
             return false;
@@ -122,11 +123,12 @@ export class Service {
     }
 
     getFilePreview(fileId) {
-        return this.bucket.getFilePreview(
+        return this.bucket.getFileView(
             conf.appwriteBucketId,
             fileId
         );
     }
+
 }
 
 const service = new Service()
